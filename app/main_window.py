@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QMainWindow, QMenu, QMenuBar, QSplitter
 
 from app.alias_file import AliasFile
-from app.icons import get_icon
 
 
 class MainWindow(QMainWindow):
@@ -14,10 +13,12 @@ class MainWindow(QMainWindow):
         self.resize(600, 400)
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-        self.aliasfile = AliasFile()
+        self.alias_file = AliasFile()
 
         file_menu = QMenu("&File", self)
-        file_menu.addAction(get_icon("x.png"), "&Exit", self.close)
+        file_menu.addAction("Create &Backup", self.alias_file.backup)
+        file_menu.addSeparator()
+        file_menu.addAction("&Exit", self.close)
 
         menu_bar = QMenuBar()
         menu_bar.addMenu(file_menu)

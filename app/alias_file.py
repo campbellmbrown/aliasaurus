@@ -1,6 +1,8 @@
 import logging
 import os
+import shutil
 import winreg as reg
+from datetime import datetime
 
 KEY_PATH = r"Software\Microsoft\Command Processor"
 VALUE_NAME = "AutoRun"
@@ -36,6 +38,15 @@ class AliasFile:
             logging.info("Alias file not found, creating it...")
             self._write_header()
         logging.info("Alias file set up successfully.")
+
+    def backup(self):
+        """Create a backup of the alias file."""
+        logging.info("Creating backup of alias file...")
+        backup_path = os.path.join(
+            os.path.dirname(ALIAS_CMD_PATH), f"alias_backup_{datetime.now().strftime('%Y%m%d%H%M%S')}.cmd"
+        )
+        shutil.copyfile(ALIAS_CMD_PATH, backup_path)
+        logging.info("Backup created successfully.")
 
     def _write_header(self):
         """Write the header of the alias file."""
