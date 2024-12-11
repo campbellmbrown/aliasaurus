@@ -3,15 +3,16 @@ import logging
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QAction,
-    QLabel,
     QMainWindow,
     QMenu,
     QMenuBar,
+    QMessageBox,
     QSplitter,
     QToolBar,
 )
 
 from app.about_dialog import AboutDialog
+from app.alias_edit import AliasEdit
 from app.alias_file import AliasFile
 from app.alias_list import AliasList
 
@@ -25,6 +26,9 @@ class MainWindow(QMainWindow):
 
         self.alias_file = AliasFile()
         self.aliases = self.alias_file.decode()
+
+        self.alias_edit = AliasEdit()
+        self.alias_edit.unsaved_changes.connect(self._on_unsaved_changes)
 
         self.save_action = QAction("&Save", self)
         self.save_action.triggered.connect(self._on_save)
@@ -73,13 +77,14 @@ class MainWindow(QMainWindow):
         context_menu.addAction(self.delete_action)
 
         self.alias_list = AliasList(context_menu)
+        self.alias_list.alias_selected.connect(self._on_alias_selected)
         for alias in self.aliases.keys():
             self.alias_list.add_row(alias)
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
         splitter.setStyleSheet("QSplitter::handle { background-color: #d3d3d3; }")
         splitter.addWidget(self.alias_list)
-        splitter.addWidget(QLabel("Right"))
+        splitter.addWidget(self.alias_edit)
         splitter.setSizes([200, 400])
 
         self.setCentralWidget(splitter)
@@ -89,13 +94,36 @@ class MainWindow(QMainWindow):
         about_dialog = AboutDialog()
         about_dialog.exec_()
 
+    def _on_alias_selected(self, name: str):
+        something_selected = bool(name)
+        self.delete_action.setEnabled(something_selected)
+        if something_selected:
+            assert name in self.aliases
+            self.alias_edit.set(name, self.aliases[name])
+        else:
+            self.alias_edit.clear()
+
+    def _on_unsaved_changes(self, unsaved: bool):
+        """Update the save and revert actions based on unsaved changes."""
+        self.save_action.setEnabled(unsaved)
+        self.revert_action.setEnabled(unsaved)
+
     def _on_save(self):
         """Save the current alias."""
-        logging.info("Save clicked")
+        old_name, new_name, commands = self.alias_edit.get()
+        if new_name != old_name:
+            # Make sure we haven't changed the alias name to something that already exists
+            if new_name in self.aliases:
+                QMessageBox.warning(self, "Duplicate Alias", "An alias with this name already exists.")
+                return
+            self.alias_list.update(old_name, new_name)
+            self.alias_edit.set(new_name, commands)
+            self.aliases.pop(old_name)
+            self.aliases[new_name] = commands
 
     def _on_revert(self):
         """Revert the current alias."""
-        logging.info("Revert clicked")
+        self.alias_edit.revert()
 
     def _on_delete(self):
         """Delete the current alias."""
