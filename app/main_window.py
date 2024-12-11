@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QDialog, QMainWindow, QMenu, QMenuBar, QVBoxLayout, QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QLabel, QMainWindow, QMenu, QMenuBar, QSplitter
 
 from app.icons import get_icon
 from app.settings import Settings, SettingsDialog
@@ -22,11 +23,13 @@ class MainWindow(QMainWindow):
         menu_bar.addMenu(file_menu)
         self.setMenuBar(menu_bar)
 
-        layout = QVBoxLayout()
+        splitter = QSplitter(Qt.Orientation.Horizontal)
+        splitter.setStyleSheet("QSplitter::handle { background-color: #d3d3d3; }")
+        splitter.addWidget(QLabel("Left"))
+        splitter.addWidget(QLabel("Right"))
+        splitter.setSizes([200, 400])
 
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
+        self.setCentralWidget(splitter)
 
     def _on_open_settings(self):
         """Show the settings dialog."""
