@@ -1,6 +1,5 @@
 import json
 import os
-from sys import platform
 
 APP_DIR = "aliasaurus"
 
@@ -10,12 +9,7 @@ class ConfigFile:
 
     def __init__(self, name: str):
         self.name = name
-        if platform == "win32":
-            self.path = os.path.join(os.environ["APPDATA"], APP_DIR, name)
-        elif platform == "linux":
-            self.path = os.path.join(os.environ["HOME"], ".config", APP_DIR, name)
-        elif platform == "darwin":
-            raise NotImplementedError("macOS is not supported.")
+        self.path = os.path.join(os.environ["APPDATA"], APP_DIR, name)
 
     def load(self) -> dict:
         """Loads the configuration file from disk into a dictionary."""
