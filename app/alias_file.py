@@ -52,6 +52,22 @@ class AliasFile:
         """Open the directory containing the alias file."""
         os.startfile(os.path.dirname(ALIAS_CMD_PATH))
 
+    def decode(self) -> dict[str, list[str]]:
+        """Decodes the alias file.
+
+        Returns:
+            dict[str, list[str]]: A dictionary of aliases and their commands.
+        """
+        aliases = {}
+        with open(ALIAS_CMD_PATH) as file:
+            prefix_len = len("doskey ")
+            for line in file:
+                if line.lower().startswith("doskey "):
+                    name, commands = line[prefix_len:].split("=", 1)
+                    commands = [cmd.strip() for cmd in commands.split("$T")]
+                    aliases[name] = commands
+        return aliases
+
     def _write_header(self):
         """Write the header of the alias file."""
         with open(ALIAS_CMD_PATH, "w", encoding="utf-8") as file:

@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QMenu, QMenuBar, QSplitter
 
 from app.about_dialog import AboutDialog
 from app.alias_file import AliasFile
+from app.alias_list import AliasList
 
 
 class MainWindow(QMainWindow):
@@ -15,6 +16,7 @@ class MainWindow(QMainWindow):
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
         self.alias_file = AliasFile()
+        self.aliases = self.alias_file.decode()
 
         file_menu = QMenu("&File", self)
         file_menu.addAction("Create &Backup", self.alias_file.backup)
@@ -30,9 +32,13 @@ class MainWindow(QMainWindow):
         menu_bar.addMenu(help_menu)
         self.setMenuBar(menu_bar)
 
+        self.alias_list = AliasList()
+        for alias in self.aliases.keys():
+            self.alias_list.add_row(alias)
+
         splitter = QSplitter(Qt.Orientation.Horizontal)
         splitter.setStyleSheet("QSplitter::handle { background-color: #d3d3d3; }")
-        splitter.addWidget(QLabel("Left"))
+        splitter.addWidget(self.alias_list)
         splitter.addWidget(QLabel("Right"))
         splitter.setSizes([200, 400])
 
