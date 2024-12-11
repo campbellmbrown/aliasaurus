@@ -3,6 +3,7 @@ import logging
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QMainWindow, QMenu, QMenuBar, QSplitter
 
+from app.about_dialog import AboutDialog
 from app.alias_file import AliasFile
 
 
@@ -21,8 +22,12 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction("&Exit", self.close)
 
+        help_menu = QMenu("&Help", self)
+        help_menu.addAction("&About", self._show_about)
+
         menu_bar = QMenuBar()
         menu_bar.addMenu(file_menu)
+        menu_bar.addMenu(help_menu)
         self.setMenuBar(menu_bar)
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -32,3 +37,8 @@ class MainWindow(QMainWindow):
         splitter.setSizes([200, 400])
 
         self.setCentralWidget(splitter)
+
+    def _show_about(self):
+        """Show the about dialog."""
+        about_dialog = AboutDialog()
+        about_dialog.exec_()
