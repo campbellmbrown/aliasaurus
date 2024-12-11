@@ -19,13 +19,32 @@ class AliasList(QListWidget):
         self.itemSelectionChanged.connect(self._on_item_selected)
         self.setFont(QFont("Consolas"))
 
-    def add_row(self, name: str):
-        """Add a new row to the list.
+    def populate(self, names: list[str]):
+        """Populate the list with aliases.
+
+        Args:
+            names (list[str]): A list of alias names.
+        """
+        self.addItems(names)
+
+    def add(self, name: str):
+        """Add a new alias to the list.
 
         Args:
             name (str): The name of the alias to add.
         """
         self.insertItem(self.count(), name)
+        self.setCurrentRow(self.count() - 1)
+
+    def remove(self, name: str):
+        """Remove an alias from the list.
+
+        Args:
+            name (str): The name of the alias to remove.
+        """
+        items = self.findItems(name, Qt.MatchFlag.MatchExactly)
+        assert len(items) == 1
+        self.takeItem(self.row(items[0]))
 
     def update(self, old_name: str, new_name: str):
         """Update the name of an alias in the list.

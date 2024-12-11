@@ -78,8 +78,7 @@ class MainWindow(QMainWindow):
 
         self.alias_list = AliasList(context_menu)
         self.alias_list.alias_selected.connect(self._on_alias_selected)
-        for alias in self.aliases.keys():
-            self.alias_list.add_row(alias)
+        self.alias_list.populate(list(self.aliases.keys()))
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
         splitter.setStyleSheet("QSplitter::handle { background-color: #d3d3d3; }")
@@ -128,8 +127,21 @@ class MainWindow(QMainWindow):
 
     def _on_delete(self):
         """Delete the current alias."""
-        logging.info("Delete clicked")
+        selected_alias, _, _ = self.alias_edit.get()
+        reply = QMessageBox.question(
+            self, "Delete Alias", f"Are you sure you want to delete the alias '{selected_alias}'?"
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.aliases.pop(selected_alias)
+            self.alias_list.remove(selected_alias)
+            self.alias_file.encode(self.aliases)
 
     def _on_new(self):
         """Create a new alias."""
-        logging.info("New clicked")
+        suffix = 1
+        while f"alias{suffix}" in self.aliases:
+            suffix += 1
+        new_alias = f"alias{suffix}"
+        self.aliases[new_alias] = ["echo Implement me!"]
+        self.alias_list.add(new_alias)
+        self.alias_file.encode(self.aliases)
