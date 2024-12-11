@@ -48,6 +48,10 @@ class AliasFile:
         shutil.copyfile(ALIAS_CMD_PATH, backup_path)
         logging.info("Backup created successfully.")
 
+    def open(self):
+        """Open the directory containing the alias file."""
+        os.startfile(os.path.dirname(ALIAS_CMD_PATH))
+
     def _write_header(self):
         """Write the header of the alias file."""
         with open(ALIAS_CMD_PATH, "w", encoding="utf-8") as file:

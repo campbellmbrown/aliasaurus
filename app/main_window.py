@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
 
         file_menu = QMenu("&File", self)
         file_menu.addAction("Create &Backup", self.alias_file.backup)
+        file_menu.addAction("&Open Alias Directory", self.alias_file.open)
         file_menu.addSeparator()
         file_menu.addAction("&Exit", self.close)
 
