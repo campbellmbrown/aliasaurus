@@ -117,9 +117,10 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, "Duplicate Alias", "An alias with this name already exists.")
                 return
             self.alias_list.update(old_name, new_name)
-            self.alias_edit.set(new_name, commands)
             self.aliases.pop(old_name)
-            self.aliases[new_name] = commands
+        self.alias_edit.set(new_name, commands)
+        self.aliases[new_name] = commands
+        self.alias_file.encode(self.aliases)
 
     def _on_revert(self):
         """Revert the current alias."""

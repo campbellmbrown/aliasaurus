@@ -68,6 +68,20 @@ class AliasFile:
                     aliases[name] = commands
         return aliases
 
+    def encode(self, aliases: dict[str, list[str]]):
+        """Encodes the aliases to the alias file.
+
+        Args:
+            aliases (dict[str, list[str]]): A dictionary of aliases and their commands.
+        """
+        self._write_header()
+        with open(ALIAS_CMD_PATH, "a", encoding="utf-8") as file:
+            for name, commands in aliases.items():
+                file.write(f"DOSKEY {name}={commands[0]}")
+                for cmd in commands[1:]:
+                    file.write(f" $T {cmd}")
+                file.write("\n")
+
     def _write_header(self):
         """Write the header of the alias file."""
         with open(ALIAS_CMD_PATH, "w", encoding="utf-8") as file:
