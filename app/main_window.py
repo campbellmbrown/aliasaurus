@@ -119,7 +119,7 @@ class MainWindow(QMainWindow):
             self.aliases.pop(old_name)
         self.alias_edit.set(new_name, commands)
         self.aliases[new_name] = commands
-        self.alias_file.encode(self.aliases)
+        self._save()
 
     def _on_revert(self):
         """Revert the current alias."""
@@ -134,7 +134,7 @@ class MainWindow(QMainWindow):
         if reply == QMessageBox.StandardButton.Yes:
             self.aliases.pop(selected_alias)
             self.alias_list.remove(selected_alias)
-            self.alias_file.encode(self.aliases)
+            self._save()
 
     def _on_new(self):
         """Create a new alias."""
@@ -144,4 +144,11 @@ class MainWindow(QMainWindow):
         new_alias = f"alias{suffix}"
         self.aliases[new_alias] = ["echo Implement me!"]
         self.alias_list.add(new_alias)
+        self._save()
+
+    def _save(self):
+        """Save the aliases to the file."""
+        in_list_order = self.alias_list.get_all_in_order()
+        assert set(in_list_order) == set(self.aliases.keys())
+        self.aliases = {name: self.aliases[name] for name in in_list_order}
         self.alias_file.encode(self.aliases)

@@ -36,7 +36,8 @@ class AliasFile:
             os.makedirs(os.path.dirname(ALIAS_CMD_PATH), exist_ok=True)
         if not os.path.exists(ALIAS_CMD_PATH):
             logging.info("Alias file not found, creating it...")
-            self._write_header()
+            with open(ALIAS_CMD_PATH, "w", encoding="utf-8") as file:
+                file.write("@echo off\n")
         logging.info("Alias file set up successfully.")
 
     def backup(self):
@@ -74,20 +75,10 @@ class AliasFile:
         Args:
             aliases (dict[str, list[str]]): A dictionary of aliases and their commands.
         """
-        self._write_header()
-        with open(ALIAS_CMD_PATH, "a", encoding="utf-8") as file:
+        with open(ALIAS_CMD_PATH, "w", encoding="utf-8") as file:
+            file.write("@echo off\n")
             for name, commands in aliases.items():
                 file.write(f"DOSKEY {name}={commands[0]}")
                 for cmd in commands[1:]:
                     file.write(f" $T {cmd}")
                 file.write("\n")
-
-    def _write_header(self):
-        """Write the header of the alias file."""
-        with open(ALIAS_CMD_PATH, "w", encoding="utf-8") as file:
-            file.write("@echo off\n")
-            file.write("ECHO .----------------------------------------------.\n")
-            file.write("ECHO ^|        Aliases set up using Aliasaurus       ^|\n")
-            file.write("ECHO ^| https://github.com/campbellmbrown/aliasaurus ^|\n")
-            file.write("ECHO '----------------------------------------------'\n")
-            file.write("ECHO %date% %time%\n")

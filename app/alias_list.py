@@ -57,6 +57,15 @@ class AliasList(QListWidget):
         assert len(items) == 1
         items[0].setText(new_name)
 
+    def get_all_in_order(self) -> list[str]:
+        """Get all the aliases in the list in order.
+
+        Returns:
+            list[str]: A list of alias names.
+        """
+        items = [self.item(i) for i in range(self.count())]
+        return [item.text() for item in items if item is not None]
+
     def _on_item_selected(self):
         item = self.currentItem()
         selected = item.text() if item is not None else ""
