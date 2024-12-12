@@ -7,6 +7,7 @@ class AliasList(QListWidget):
     """A list of aliases that can be rearranged."""
 
     alias_selected = pyqtSignal(str)
+    order_changed = pyqtSignal()
 
     def __init__(self, menu: QMenu, parent=None):
         super().__init__(parent)
@@ -73,3 +74,7 @@ class AliasList(QListWidget):
 
     def contextMenuEvent(self, event: QContextMenuEvent):
         self.menu.exec_(event.globalPos())
+
+    def dropEvent(self, event):
+        super().dropEvent(event)
+        self.order_changed.emit()

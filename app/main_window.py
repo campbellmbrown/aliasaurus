@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
 
         self.alias_list = AliasList(context_menu)
         self.alias_list.alias_selected.connect(self._on_alias_selected)
+        self.alias_list.order_changed.connect(self._save)
         self.alias_list.populate(list(self.aliases.keys()))
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
