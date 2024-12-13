@@ -48,7 +48,8 @@ rm -rf dist build aliasaurus.spec resources/GIT_SHA installer/*.exe
 Build into a single executable using PyInstaller:
 
 ```bash
-sh sh/publish.sh
+git rev-parse --short=8 HEAD > resources/GIT_SHA
+pyinstaller --onefile --noconsole --add-data "resources;resources" aliasaurus.py
 ```
 
 The executable (``aliasaurus.exe``) will be in the ``dist`` directory.
