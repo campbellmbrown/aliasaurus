@@ -2,7 +2,7 @@ import logging
 import subprocess
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (
     QAction,
     QMainWindow,
@@ -23,7 +23,7 @@ from app.icons import get_icon
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Aliasaurus")
+        self._set_title("Aliasaurus")
         self.resize(600, 400)
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -101,6 +101,30 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(splitter)
 
+    def closeEvent(self, event: QCloseEvent):
+        if self.alias_edit.has_unsaved_changes:
+            buttons = QMessageBox.StandardButtons()
+            buttons |= QMessageBox.StandardButton.Save
+            buttons |= QMessageBox.StandardButton.Discard
+            buttons |= QMessageBox.StandardButton.Cancel
+            reply = QMessageBox.question(
+                self,
+                "Unsaved Changes",
+                "Do you want to save your changes before exiting?",
+                buttons,
+            )
+            if reply == QMessageBox.StandardButton.Save:
+                self._on_save()
+                event.accept()
+            elif reply == QMessageBox.StandardButton.Discard:
+                event.accept()
+            else:
+                event.ignore()
+
+    def _set_title(self, title: str):
+        self.title = title
+        self.setWindowTitle(title)
+
     def _show_about(self):
         """Show the about dialog."""
         about_dialog = AboutDialog()
@@ -112,13 +136,16 @@ class MainWindow(QMainWindow):
         if something_selected:
             assert name in self.aliases
             self.alias_edit.set(name, self.aliases[name])
+            self._set_title(f"Aliasaurus - {name}")
         else:
             self.alias_edit.clear()
+            self._set_title("Aliasaurus")
 
     def _on_unsaved_changes(self, unsaved: bool):
         """Update the save and revert actions based on unsaved changes."""
         self.save_action.setEnabled(unsaved)
         self.revert_action.setEnabled(unsaved)
+        self.setWindowTitle(f"{self.title}{'*' if unsaved else ''}")
 
     def _on_save(self):
         """Save the current alias."""
@@ -165,6 +192,7 @@ class MainWindow(QMainWindow):
         assert set(in_list_order) == set(self.aliases.keys())
         self.aliases = {name: self.aliases[name] for name in in_list_order}
         self.alias_file.encode(self.aliases)
+        self._set_title(f"Aliasaurus - {self.alias_edit.selected_alias}")
 
     def _open_terminal(self):
         """Open a new terminal window."""

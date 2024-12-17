@@ -12,6 +12,7 @@ class AliasEdit(QWidget):
         super().__init__()
         self.selected_alias = ""
         self.selected_alias_commands: list[str] = []
+        self.has_unsaved_changes = False
 
         self.name_edit = QLineEdit()
         self.name_edit.setFont(QFont("Consolas"))
@@ -66,4 +67,5 @@ class AliasEdit(QWidget):
     def _check_unsaved_changes(self):
         unsaved_changes = self.commands_edit.toPlainText() != "\n".join(self.selected_alias_commands)
         unsaved_changes |= self.name_edit.text() != self.selected_alias
+        self.has_unsaved_changes = unsaved_changes
         self.unsaved_changes.emit(unsaved_changes)
