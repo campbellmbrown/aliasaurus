@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QContextMenuEvent, QFont
+from PyQt5.QtGui import QContextMenuEvent, QFont, QKeyEvent
 from PyQt5.QtWidgets import QListView, QListWidget, QMenu
 
 
@@ -78,3 +78,9 @@ class AliasList(QListWidget):
     def dropEvent(self, event):
         super().dropEvent(event)
         self.order_changed.emit()
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Escape:
+            self.setCurrentItem(None)
+        else:
+            super().keyPressEvent(event)
