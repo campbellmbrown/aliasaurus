@@ -21,6 +21,7 @@ from app.alias_edit import AliasEdit
 from app.alias_file import AliasFile
 from app.alias_list import AliasList
 from app.icons import get_icon
+from app.settings import Settings
 
 
 class MainWindow(QMainWindow):
@@ -29,6 +30,9 @@ class MainWindow(QMainWindow):
         self._set_title("Aliasaurus")
         self.resize(600, 400)
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+        self.settings = Settings()
+        self.settings.load()
 
         self.alias_file = AliasFile()
         self.aliases = self.alias_file.decode()
@@ -59,8 +63,8 @@ class MainWindow(QMainWindow):
         theme_action_group = QActionGroup(self)
         theme_action_group.setExclusive(True)
 
-        light_theme_action = theme_action_group.addAction("Light")
-        dark_theme_action = theme_action_group.addAction("Dark")
+        light_theme_action = theme_action_group.addAction("light")
+        dark_theme_action = theme_action_group.addAction("dark")
         assert light_theme_action is not None
         assert dark_theme_action is not None
         light_theme_action.setCheckable(True)
@@ -70,8 +74,12 @@ class MainWindow(QMainWindow):
         dark_theme_action.triggered.connect(lambda: self._change_theme("dark"))
         light_theme_action.triggered.connect(lambda: self._change_theme("light"))
 
-        light_theme_action.setChecked(True)
-        self._change_theme("light")
+        if self.settings.theme == "dark":
+            dark_theme_action.setChecked(True)
+            self._change_theme("dark")
+        else:  # Default to light theme
+            light_theme_action.setChecked(True)
+            self._change_theme("light")
 
         file_menu = QMenu("&File", self)
         file_menu.addAction(self.new_action)
@@ -226,3 +234,4 @@ class MainWindow(QMainWindow):
         application = QApplication.instance()
         assert isinstance(application, QApplication)
         application.setStyleSheet(stylesheet)
+        self.settings.set_theme(theme)
