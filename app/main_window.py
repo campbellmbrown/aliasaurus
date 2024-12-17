@@ -1,6 +1,8 @@
 import logging
+import subprocess
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QAction,
     QMainWindow,
@@ -15,6 +17,7 @@ from app.about_dialog import AboutDialog
 from app.alias_edit import AliasEdit
 from app.alias_file import AliasFile
 from app.alias_list import AliasList
+from app.icons import get_icon
 
 
 class MainWindow(QMainWindow):
@@ -45,6 +48,9 @@ class MainWindow(QMainWindow):
         self.new_action = QAction("&New", self)
         self.new_action.triggered.connect(self._on_new)
         self.new_action.setShortcut("Ctrl+N")
+        self.open_terminal_action = QAction(QIcon(get_icon("terminal.png")), "Open &Terminal", self)
+        self.open_terminal_action.triggered.connect(self._open_terminal)
+        self.open_terminal_action.setShortcut("Ctrl+T")
 
         file_menu = QMenu("&File", self)
         file_menu.addAction(self.new_action)
@@ -57,11 +63,15 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction("&Exit", self.close)
 
+        run_menu = QMenu("&Run", self)
+        run_menu.addAction(self.open_terminal_action)
+
         help_menu = QMenu("&Help", self)
         help_menu.addAction("&About", self._show_about)
 
         menu_bar = QMenuBar()
         menu_bar.addMenu(file_menu)
+        menu_bar.addMenu(run_menu)
         menu_bar.addMenu(help_menu)
         self.setMenuBar(menu_bar)
 
@@ -70,6 +80,8 @@ class MainWindow(QMainWindow):
         tool_bar.addAction(self.save_action)
         tool_bar.addAction(self.revert_action)
         tool_bar.addAction(self.delete_action)
+        tool_bar.addSeparator()
+        tool_bar.addAction(self.open_terminal_action)
         self.addToolBar(tool_bar)
 
         context_menu = QMenu(self)
@@ -153,3 +165,7 @@ class MainWindow(QMainWindow):
         assert set(in_list_order) == set(self.aliases.keys())
         self.aliases = {name: self.aliases[name] for name in in_list_order}
         self.alias_file.encode(self.aliases)
+
+    def _open_terminal(self):
+        """Open a new terminal window."""
+        subprocess.Popen(["start", "cmd"], shell=True)
