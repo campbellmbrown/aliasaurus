@@ -1,10 +1,13 @@
 import logging
 import subprocess
 
+import qdarktheme
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (
     QAction,
+    QActionGroup,
+    QApplication,
     QMainWindow,
     QMenu,
     QMenuBar,
@@ -52,6 +55,24 @@ class MainWindow(QMainWindow):
         self.open_terminal_action.triggered.connect(self._open_terminal)
         self.open_terminal_action.setShortcut("Ctrl+T")
 
+        preferences_menu = QMenu("&Preferences", self)
+        theme_action_group = QActionGroup(self)
+        theme_action_group.setExclusive(True)
+
+        light_theme_action = theme_action_group.addAction("Light")
+        dark_theme_action = theme_action_group.addAction("Dark")
+        assert light_theme_action is not None
+        assert dark_theme_action is not None
+        light_theme_action.setCheckable(True)
+        dark_theme_action.setCheckable(True)
+        preferences_menu.addAction(light_theme_action)
+        preferences_menu.addAction(dark_theme_action)
+        dark_theme_action.triggered.connect(lambda: self._change_theme("dark"))
+        light_theme_action.triggered.connect(lambda: self._change_theme("light"))
+
+        light_theme_action.setChecked(True)
+        self._change_theme("light")
+
         file_menu = QMenu("&File", self)
         file_menu.addAction(self.new_action)
         file_menu.addAction(self.save_action)
@@ -60,6 +81,8 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction("Create &Backup", self.alias_file.backup)
         file_menu.addAction("&Open Alias Directory", self.alias_file.open)
+        file_menu.addSeparator()
+        file_menu.addMenu(preferences_menu)
         file_menu.addSeparator()
         file_menu.addAction("&Exit", self.close)
 
@@ -94,7 +117,6 @@ class MainWindow(QMainWindow):
         self.alias_list.populate(list(self.aliases.keys()))
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
-        splitter.setStyleSheet("QSplitter::handle { background-color: #d3d3d3; }")
         splitter.addWidget(self.alias_list)
         splitter.addWidget(self.alias_edit)
         splitter.setSizes([200, 400])
@@ -197,3 +219,10 @@ class MainWindow(QMainWindow):
     def _open_terminal(self):
         """Open a new terminal window."""
         subprocess.Popen(["start", "cmd"], shell=True)
+
+    def _change_theme(self, theme: str):
+        """Change the application theme."""
+        stylesheet = qdarktheme.load_stylesheet(theme)
+        application = QApplication.instance()
+        assert isinstance(application, QApplication)
+        application.setStyleSheet(stylesheet)
