@@ -1,5 +1,11 @@
 # Aliasaurus
 
+![License](https://img.shields.io/github/license/campbellmbrown/aliasaurus)
+![Release](https://img.shields.io/github/v/release/campbellmbrown/aliasaurus)
+![Contributors](https://img.shields.io/github/contributors/campbellmbrown/aliasaurus)
+![Issues](https://img.shields.io/github/issues/campbellmbrown/aliasaurus)
+![Pull Requests](https://img.shields.io/github/issues-pr/campbellmbrown/aliasaurus)
+
 ![aliasurus-banner](images/banner.png)
 
 Aliasaurus is a simple Windows app to view, organize, and edit Windows aliases.
