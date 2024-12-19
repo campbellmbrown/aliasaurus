@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         self._set_title("Aliasaurus")
         self.resize(600, 400)
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-        self.setWindowIcon(QIcon(get_icon("logo_32x32.png")))
+        self.setWindowIcon(get_icon("logo_32x32.png"))
 
         self.settings = Settings()
         self.settings.load()
@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
         self.new_action = QAction("&New", self)
         self.new_action.triggered.connect(self._on_new)
         self.new_action.setShortcut("Ctrl+N")
-        self.open_terminal_action = QAction(QIcon(get_icon("terminal.png")), "Open &Terminal", self)
+        self.open_terminal_action = QAction(get_icon("terminal.png"), "Open &Terminal", self)
         self.open_terminal_action.triggered.connect(self._open_terminal)
         self.open_terminal_action.setShortcut("Ctrl+T")
 
