@@ -3,7 +3,7 @@ import subprocess
 
 import qdarktheme
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCloseEvent, QIcon
+from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import (
     QAction,
     QActionGroup,
