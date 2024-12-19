@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         self._set_title("Aliasaurus")
         self.resize(600, 400)
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+        self.setWindowIcon(QIcon(get_icon("logo_32x32.png")))
 
         self.settings = Settings()
         self.settings.load()
