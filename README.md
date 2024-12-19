@@ -49,7 +49,7 @@ Build into a single executable using PyInstaller:
 
 ```bash
 git rev-parse --short=8 HEAD > resources/GIT_SHA
-pyinstaller --onefile --noconsole --add-data "resources;resources" aliasaurus.py
+pyinstaller --onefile --noconsole --add-data "resources;resources" --icon=resources/logo.ico aliasaurus.py
 ```
 
 The executable (``aliasaurus.exe``) will be in the ``dist`` directory.

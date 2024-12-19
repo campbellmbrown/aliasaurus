@@ -25,6 +25,7 @@ DisableProgramGroupPage=yes
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=.
 OutputBaseFilename=AliasaurusInstaller_{#MyAppVersion}
+SetupIconFile=.\..\resources\logo.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
