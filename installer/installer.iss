@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aliasaurus"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Campbell Brown"
 #define MyAppURL "https://github.com/campbellmbrown/aliasaurus"
 #define MyAppExeName "aliasaurus.exe"
